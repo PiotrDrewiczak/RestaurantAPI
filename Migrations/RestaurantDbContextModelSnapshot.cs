@@ -27,16 +27,16 @@ namespace RestaurantAPI.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PostalCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Street")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 

@@ -1,20 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace RestaurantAPI.Entities
 {
     public class RestaurantDbContext : DbContext
     {
+        private readonly IConfiguration configuration;
+
         public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Dish> Dishes { get; set; }
-
-        public RestaurantDbContext(DbContextOptions<RestaurantDbContext> options) : base(options)
+        public RestaurantDbContext(IConfiguration configuration)
         {
-
+            this.configuration = configuration;
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,13 +29,16 @@ namespace RestaurantAPI.Entities
             modelBuilder.Entity<Address>()
                 .Property(a => a.City)
                 .IsRequired()
-                .HasMaxLength(25);
+                .HasMaxLength(50);
             modelBuilder.Entity<Address>()
                 .Property(a => a.Street)
                 .IsRequired()
-                .HasMaxLength(25);
+                .HasMaxLength(50);
 
         }
-
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("Default"));
+        }
     }
 }
