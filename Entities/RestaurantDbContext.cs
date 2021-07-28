@@ -16,18 +16,5 @@ namespace RestaurantAPI.Entities
         {
 
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Restaurant>()
-                  .Property(r => r.Name)
-                  .IsRequired()
-                  .HasMaxLength(25);
-
-            modelBuilder.Entity<Dish>()
-                .Property(d => d.Name)
-                .IsRequired()
-                .HasMaxLength(25);
-        }
-
     }
 }
