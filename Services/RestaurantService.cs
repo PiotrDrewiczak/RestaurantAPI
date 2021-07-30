@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using RestaurantAPI.Entities;
 using RestaurantAPI.Models;
 using System.Collections.Generic;
@@ -11,11 +12,13 @@ namespace RestaurantAPI.Serices
     {
         private readonly RestaurantDbContext dbContext;
         private readonly IMapper mapper;
+        private readonly ILogger<RestaurantService> logger;
 
-        public RestaurantService(RestaurantDbContext dbContext, IMapper mapper)
+        public RestaurantService(RestaurantDbContext dbContext, IMapper mapper, ILogger<RestaurantService> logger)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
         public RestaurantDto GetById(int id)
@@ -56,6 +59,7 @@ namespace RestaurantAPI.Serices
         }
         public bool Delete(int id)
         {
+            logger.LogError("Restaurant with id:{0} DELETE action invoked",id);
             var restaurant = dbContext.Restaurants.FirstOrDefault(r => r.Id == id);
             if (restaurant is null)
             {
