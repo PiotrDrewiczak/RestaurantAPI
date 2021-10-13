@@ -1,0 +1,30 @@
+﻿global:
+  scrape_interval:     2m
+  evaluation_interval: 5s
+  scrape_timeout:     2m
+
+scrape_configs:
+    # The job name assigned to scraped metrics by default.
+    - job_name: monitoring
+      static_configs:
+        - targets: ['localhost:9090']
+    - job_name: restaurantapi
+      metrics_path:
+      static_configs:
+        - targets: ['restaurantapi:5106']
+    - job_name: blackbox
+      metrics_path: /probe
+      # Configures the protocol scheme used for requests.
+      scheme: http
+      params:
+        module: [ http_2xx ]
+      file_sd_configs:
+        - files:
+            - targets.yml
+      relabel_configs:
+        - source_labels: [ __address__ ]
+          target_label: __param_target
+        - source_labels: [ __param_target ]
+          target_label: instance
+        - target_label: __address__
+          replacement: blackbox:9115

@@ -1,0 +1,55 @@
+version: '3.4'
+
+services:
+  restaurantapi:
+    image: restaurantapi
+    container_name: WebAPI
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+    - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+     - "5106:5106"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command: [ '--config.file=/monitoring/prometheus.yml' ]
+    ports:
+     - "9090:9090"
+    volumes:
+      - ./prometheus:/monitoring/
+    networks:
+     - monitor-net
+  grafana:
+    image: grafana/grafana:6.7.2
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    user: '472'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    networks:
+      - monitor-net
+  blackbox:
+    image: prom/blackbox-exporter
+    container_name: blackbox
+    command: ['--config.file=/config/blackbox.yml']
+    privileged: true
+    ports:
+      - "9115:9115"
+    volumes:
+      - ./blackbox.yml:/config/blackbox.yml
+    networks:
+      - monitor-net
+volumes:
+  grafana-storage:
+    driver: local
+
+networks:
+  monitor-net:
+    driver: bridge        
+
